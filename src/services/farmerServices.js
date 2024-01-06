@@ -3,7 +3,7 @@ const pool = require("../database/database.js");
 async function selectFarmers() {
   const dados_agricultor = await pool.connect();
   const res = await dados_agricultor.query("SELECT * FROM dados_agricultor");
-  dados_agricultor.release();
+
   return res.rows;
 }
 
@@ -13,7 +13,6 @@ async function selectFarmer(id) {
     "SELECT * FROM dados_agricultor WHERE id =$1",
     [id]
   );
-  dados_agricultor.release();
   return res.rows;
 }
 
@@ -35,7 +34,6 @@ async function insertFarmer(produtor) {
   ];
 
   await dados_agricultor.query(res, value);
-  dados_agricultor.release();
 }
 
 async function updateFarmer(id, produtor) {
@@ -57,7 +55,6 @@ async function updateFarmer(id, produtor) {
   ];
 
   await dados_agricultor.query(res, value);
-  dados_agricultor.release();
 }
 
 async function deleteFarmer(id) {
@@ -65,7 +62,6 @@ async function deleteFarmer(id) {
   const res = "DELETE FROM dados_agricultor WHERE id = $1";
   const value = [id];
   await dados_agricultor.query(res, value);
-  dados_agricultor.release();
 }
 
 module.exports = {
