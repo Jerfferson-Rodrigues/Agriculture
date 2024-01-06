@@ -1,91 +1,106 @@
-async function connect() {
-  if (global.connection) return global.connection.connect();
+// const { pool } = require("pg");
 
-  const { Pool } = require("pg");
-  const pool = new Pool({
-    connectionString: process.env.CONNECTION_STRING,
-  });
+const { Pool } = require("pg");
+const dotenv = require("dotenv");
 
-  const dados_agricultor = await pool.connect();
-  console.log("Conexão feita");
+dotenv.config();
 
-  const res = await dados_agricultor.query("select now()");
-  console.log(res.rows[0]);
-  dados_agricultor.release();
+const pool = new Pool({
+  connectionString: process.env.CONNECTION_STRING,
+});
 
-  global.connection = pool;
-  return pool.connect();
-}
+module.exports = pool;
 
-connect();
+// async function connect() {
+//   if (global.connection) return global.connection.connect();
 
-async function selectFarmers() {
-  const dados_agricultor = await connect();
-  const res = await dados_agricultor.query("SELECT * FROM dados_agricultor");
-  return res.rows;
-}
+//   const { Pool } = require("pg");
+//   const pool = new Pool({
+//     connectionString: process.env.CONNECTION_STRING,
+//   });
 
-async function selectFarmer(id) {
-  const dados_agricultor = await connect();
-  const res = await dados_agricultor.query(
-    "SELECT * FROM dados_agricultor WHERE id =$1",
-    [id]
-  );
-  return res.rows;
-}
+//   const dados_agricultor = await pool.connect();
+//   console.log("Conexão feita");
 
-async function insertFarmer(produtor) {
-  const dados_agricultor = await connect();
+//   const res = await dados_agricultor.query("select now()");
+//   console.log(res.rows[0]);
+//   dados_agricultor.release();
 
-  const res =
-    "INSERT INTO dados_agricultor (cpf_cnpj, nome_produtor, nome_fazenda, cidade, estado,area_total_hectares, area_agricultavel_hectares, area_vegetacao_hectares, culturas_plantadas) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)";
-  const value = [
-    produtor.cpf_cnpj,
-    produtor.nome_produtor,
-    produtor.nome_fazenda,
-    produtor.cidade,
-    produtor.estado,
-    produtor.area_total_hectares,
-    produtor.area_agricultavel_hectares,
-    produtor.area_vegetacao_hectares,
-    produtor.culturas_plantadas,
-  ];
+//   global.connection = pool;
+//   return pool.connect();
+// }
 
-  await dados_agricultor.query(res, value);
-}
+// connect();
 
-async function updateFarmer(produtor) {
-  const dados_agricultor = await connect();
+// module.exports = pool;
 
-  const res =
-    "UPDATE dados_agricultor SET cpf_cnpj = $1,nome_produtor = $2,nome_fazenda = $3,cidade = $4,estado = $5,area_total_hectares = $6,area_agricultavel_hectares = $7,area_vegetacao_hectares = $8,culturas_plantadas = $9 WHERE id = $10";
-  const value = [
-    produtor.cpf_cnpj,
-    produtor.nome_produtor,
-    produtor.nome_fazenda,
-    produtor.cidade,
-    produtor.estado,
-    produtor.area_total_hectares,
-    produtor.area_agricultavel_hectares,
-    produtor.area_vegetacao_hectares,
-    produtor.culturas_plantadas,
-    id,
-  ];
+// async function selectFarmers() {
+//   const dados_agricultor = await connect();
+//   const res = await dados_agricultor.query("SELECT * FROM dados_agricultor");
+//   return res.rows;
+// }
 
-  await dados_agricultor.query(res, value);
-}
+// async function selectFarmer(id) {
+//   const dados_agricultor = await connect();
+//   const res = await dados_agricultor.query(
+//     "SELECT * FROM dados_agricultor WHERE id =$1",
+//     [id]
+//   );
+//   return res.rows;
+// }
 
-async function deleteFarmer(id) {
-  const dados_agricultor = await connect();
-  const res = "DELETE FROM dados_agricultor WHERE id = $1";
-  const value = [id];
-  await dados_agricultor.query(res, value);
-}
+// async function insertFarmer(produtor) {
+//   const dados_agricultor = await connect();
 
-module.exports = {
-  selectFarmers,
-  selectFarmer,
-  insertFarmer,
-  updateFarmer,
-  deleteFarmer,
-};
+//   const res =
+//     "INSERT INTO dados_agricultor (cpf_cnpj, nome_produtor, nome_fazenda, cidade, estado,area_total_hectares, area_agricultavel_hectares, area_vegetacao_hectares, culturas_plantadas) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)";
+//   const value = [
+//     produtor.cpf_cnpj,
+//     produtor.nome_produtor,
+//     produtor.nome_fazenda,
+//     produtor.cidade,
+//     produtor.estado,
+//     produtor.area_total_hectares,
+//     produtor.area_agricultavel_hectares,
+//     produtor.area_vegetacao_hectares,
+//     produtor.culturas_plantadas,
+//   ];
+
+//   await dados_agricultor.query(res, value);
+// }
+
+// async function updateFarmer(produtor) {
+//   const dados_agricultor = await connect();
+
+//   const res =
+//     "UPDATE dados_agricultor SET cpf_cnpj = $1,nome_produtor = $2,nome_fazenda = $3,cidade = $4,estado = $5,area_total_hectares = $6,area_agricultavel_hectares = $7,area_vegetacao_hectares = $8,culturas_plantadas = $9 WHERE id = $10";
+//   const value = [
+//     produtor.cpf_cnpj,
+//     produtor.nome_produtor,
+//     produtor.nome_fazenda,
+//     produtor.cidade,
+//     produtor.estado,
+//     produtor.area_total_hectares,
+//     produtor.area_agricultavel_hectares,
+//     produtor.area_vegetacao_hectares,
+//     produtor.culturas_plantadas,
+//     id,
+//   ];
+
+//   await dados_agricultor.query(res, value);
+// }
+
+// async function deleteFarmer(id) {
+//   const dados_agricultor = await connect();
+//   const res = "DELETE FROM dados_agricultor WHERE id = $1";
+//   const value = [id];
+//   await dados_agricultor.query(res, value);
+// }
+
+// module.exports = {
+//   selectFarmers,
+//   selectFarmer,
+//   insertFarmer,
+//   updateFarmer,
+//   deleteFarmer,
+// };
