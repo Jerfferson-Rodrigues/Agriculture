@@ -19,7 +19,6 @@ async function selectFarmer(id) {
 async function insertFarmer(produtor) {
   const dados_agricultor = await pool.connect();
 
-  // Verificar se a soma da área agrícola e vegetação não é maior que a área total
   if (
     produtor.area_agricultavel_hectares + produtor.area_vegetacao_hectares >
     produtor.area_total_hectares
@@ -48,6 +47,15 @@ async function insertFarmer(produtor) {
 
 async function updateFarmer(id, produtor) {
   const dados_agricultor = await pool.connect();
+
+  if (
+    produtor.area_agricultavel_hectares + produtor.area_vegetacao_hectares >
+    produtor.area_total_hectares
+  ) {
+    throw new Error(
+      "A soma de área agrícultável e vegetação, não deverá ser maior que a área total da fazenda."
+    );
+  }
 
   const res =
     "UPDATE dados_agricultor SET cpf_cnpj = $1,nome_produtor = $2,nome_fazenda = $3,cidade = $4,estado = $5,area_total_hectares = $6,area_agricultavel_hectares = $7,area_vegetacao_hectares = $8,culturas_plantadas = $9 WHERE id = $10";

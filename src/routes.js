@@ -39,7 +39,7 @@ router.patch("/:id", async (req, res) => {
     res.sendStatus(200);
   } catch (error) {
     console.error(error);
-    res.status(500).send("Erro ao atualizar produtor.");
+    res.status(400).send(error.message);
   }
 });
 
