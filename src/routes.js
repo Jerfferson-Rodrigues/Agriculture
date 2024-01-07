@@ -3,16 +3,6 @@ const router = express.Router();
 const farmerServices = require("./services/farmerServices");
 const validateCpfCnpj = require("./validation/validarCpfCnpj");
 
-router.get("/:id", async (req, res) => {
-  try {
-    const agro = await farmerServices.selectFarmer(req.params.id);
-    res.json(agro);
-  } catch (error) {
-    console.error(error);
-    res.status(500).send("Erro ao obter produtor.");
-  }
-});
-
 router.get("/", async (req, res) => {
   try {
     const agros = await farmerServices.selectFarmers();
@@ -23,6 +13,16 @@ router.get("/", async (req, res) => {
   }
 });
 
+router.get("/dashboard", async (req, res) => {
+  try {
+    const totalStats = await farmerServices.getTotalStats();
+    res.json(totalStats);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Erro ao obter totais para o dashboard.");
+  }
+});
+
 router.post("/", async (req, res) => {
   try {
     await farmerServices.insertFarmer(req.body);
@@ -30,6 +30,16 @@ router.post("/", async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(400).send(error.message);
+  }
+});
+
+router.get("/:id", async (req, res) => {
+  try {
+    const agro = await farmerServices.selectFarmer(req.params.id);
+    res.json(agro);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Erro ao obter produtor.");
   }
 });
 

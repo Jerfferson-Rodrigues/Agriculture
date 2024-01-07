@@ -82,10 +82,47 @@ async function deleteFarmer(id) {
   await dados_agricultor.query(res, value);
 }
 
+async function getTotalStats() {
+  const dados_agricultor = await pool.connect();
+  const res = await dados_agricultor.query(
+    "SELECT COUNT(*) AS total_fazendas, SUM(area_total_hectares) AS total_fazendas_hectares, SUM(area_agricultavel_hectares) AS total_area_agricultavel, SUM(area_vegetacao_hectares) AS total_area_vegetacao FROM dados_agricultor"
+  );
+
+  const estado = await dados_agricultor.query(
+    // "SELECT estado, COUNT(*) AS TotalFazendasPorEstado FROM dados_agricultor GROUP BY estado"
+    "SELECT UPPER(estado) AS estado, COUNT(*) AS total_fazendas_por_estado FROM dados_agricultor GROUP BY UPPER(estado)"
+  );
+  console.log("Resposta TotalFazendasPorEstado:", estado.rows);
+
+  const culturas = await dados_agricultor.query(
+    "SELECT culturas_plantadas, COUNT(*) AS total_cultura FROM dados_agricultor GROUP BY culturas_plantadas"
+  );
+
+  const totalDashboard = {
+    total_fazendas: res.rows[0].total_fazendas,
+    // TotalFazendasPorEstado: estado.rows[0].TotalFazendasPorEstado,
+
+    fazendas_por_estado: estado.rows.map((row) => ({
+      estado: row.estado,
+      total_fazendas_por_estado: row.total_fazendas_por_estado,
+    })),
+    culturas: culturas.rows.map((row) => ({
+      cultura_plantada: row.culturas_plantadas,
+      total_cultura: row.total_cultura,
+    })),
+    total_fazendas_hectares: res.rows[0].total_fazendas_hectares,
+    total_area_agricultavel: res.rows[0].total_area_agricultavel,
+    total_area_vegetacao: res.rows[0].total_area_vegetacao,
+  };
+
+  return totalDashboard;
+}
+
 module.exports = {
   selectFarmers,
   selectFarmer,
   insertFarmer,
   updateFarmer,
   deleteFarmer,
+  getTotalStats,
 };
