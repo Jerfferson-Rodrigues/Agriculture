@@ -1,4 +1,5 @@
 const pool = require("../database/database.js");
+const isValidCpfCnpj = require("../validation/CpfCnpj.js");
 
 async function selectFarmers() {
   const dados_agricultor = await pool.connect();
@@ -18,6 +19,10 @@ async function selectFarmer(id) {
 
 async function insertFarmer(produtor) {
   const dados_agricultor = await pool.connect();
+
+  if (!isValidCpfCnpj(produtor.cpf_cnpj)) {
+    throw new Error("CPF/CNPJ inválido.");
+  }
 
   if (
     produtor.area_agricultavel_hectares + produtor.area_vegetacao_hectares >
@@ -47,6 +52,10 @@ async function insertFarmer(produtor) {
 
 async function updateFarmer(id, produtor) {
   const dados_agricultor = await pool.connect();
+
+  if (!isValidCpfCnpj(produtor.cpf_cnpj)) {
+    throw new Error("CPF/CNPJ inválido.");
+  }
 
   if (
     produtor.area_agricultavel_hectares + produtor.area_vegetacao_hectares >
@@ -92,7 +101,6 @@ async function getTotalStats() {
     // "SELECT estado, COUNT(*) AS TotalFazendasPorEstado FROM dados_agricultor GROUP BY estado"
     "SELECT UPPER(estado) AS estado, COUNT(*) AS total_fazendas_por_estado FROM dados_agricultor GROUP BY UPPER(estado)"
   );
-  console.log("Resposta TotalFazendasPorEstado:", estado.rows);
 
   const culturas = await dados_agricultor.query(
     "SELECT culturas_plantadas, COUNT(*) AS total_cultura FROM dados_agricultor GROUP BY culturas_plantadas"

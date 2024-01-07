@@ -1,7 +1,6 @@
 const express = require("express");
 const router = express.Router();
 const farmerServices = require("./services/farmerServices");
-const validateCpfCnpj = require("./validation/validarCpfCnpj");
 
 router.get("/", async (req, res) => {
   try {
