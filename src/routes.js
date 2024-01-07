@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const farmerServices = require("./services/farmerServices");
+const validateCpfCnpj = require("./validation/validarCpfCnpj");
 
 router.get("/:id", async (req, res) => {
   try {
@@ -28,7 +29,7 @@ router.post("/", async (req, res) => {
     res.sendStatus(201);
   } catch (error) {
     console.error(error);
-    res.status(500).send("Erro ao inserir produtor.");
+    res.status(400).send(error.message);
   }
 });
 

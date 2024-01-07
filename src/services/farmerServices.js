@@ -19,6 +19,16 @@ async function selectFarmer(id) {
 async function insertFarmer(produtor) {
   const dados_agricultor = await pool.connect();
 
+  // Verificar se a soma da área agrícola e vegetação não é maior que a área total
+  if (
+    produtor.area_agricultavel_hectares + produtor.area_vegetacao_hectares >
+    produtor.area_total_hectares
+  ) {
+    throw new Error(
+      "A soma de área agrícultável e vegetação, não deverá ser maior que a área total da fazenda."
+    );
+  }
+
   const res =
     "INSERT INTO dados_agricultor (cpf_cnpj, nome_produtor, nome_fazenda, cidade, estado,area_total_hectares, area_agricultavel_hectares, area_vegetacao_hectares, culturas_plantadas) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)";
   const value = [
