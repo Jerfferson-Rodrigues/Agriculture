@@ -27,4 +27,4 @@
 
 Na pasta `collection`, você encontrará o arquivo `agriculture.json` com os endpoints para testar🧪.
 
-👨‍💻🧠🚜
+
